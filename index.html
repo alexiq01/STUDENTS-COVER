@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#e9f0fa">
+  <title>منشئ صفحة الغلاف الجامعي</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #16243a;
+      --muted: #718096;
+      --line: rgba(122, 145, 177, .22);
+      --accent: #3158a5;
+      --accent-strong: #244887;
+      --accent-soft: rgba(80, 122, 196, .11);
+      --glass: rgba(255, 255, 255, .64);
+      --glass-strong: rgba(255, 255, 255, .78);
+      --paper-shadow: 0 18px 52px rgba(30, 48, 78, .19), 0 3px 10px rgba(30, 48, 78, .08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 86% 12%, rgba(156, 198, 239, .40), transparent 32%),
+        radial-gradient(ellipse at 13% 44%, rgba(193, 180, 242, .27), transparent 34%),
+        radial-gradient(ellipse at 76% 88%, rgba(157, 220, 214, .24), transparent 30%),
+        linear-gradient(138deg, #f3f6fb 0%, #e9eff8 48%, #f5f3fa 100%);
+      background-attachment: fixed;
+      color: var(--ink);
+      font-family: Tahoma, Arial, "Noto Naskh Arabic", sans-serif;
+    }
+    button, input, select { font-family: inherit; }
+    .appbar {
+      min-height: 72px;
+      padding: 13px max(24px, calc((100% - 1370px) / 2));
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: rgba(255, 255, 255, .50);
+      border-bottom: 1px solid rgba(255, 255, 255, .8);
+      box-shadow: 0 5px 26px rgba(53, 75, 111, .055);
+      backdrop-filter: blur(24px) saturate(165%);
+      -webkit-backdrop-filter: blur(24px) saturate(165%);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-mark {
+      width: 42px; height: 42px; border-radius: 15px;
+      display: grid; place-items: center;
+      color: #fff;
+      background: linear-gradient(145deg, #4b75bd, #294c90);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.38), 0 5px 13px rgba(41, 76, 144, .22);
+    }
+    .brand-mark svg { width: 23px; height: 23px; }
+    .brand-title { font-size: 15px; font-weight: 800; letter-spacing: -.2px; }
+    .brand-subtitle { margin-top: 4px; color: var(--muted); font-size: 11px; }
+    .appbar-note { display: inline-flex; align-items: center; gap: 8px; color: #64758d; font-size: 12px; }
+    .appbar-note svg { width: 17px; height: 17px; color: #5374ac; }
+    .workspace {
+      max-width: 1370px;
+      margin: 0 auto;
+      padding: 27px 24px 44px;
+      display: grid;
+      grid-template-columns: 350px minmax(0, 1fr);
+      gap: 27px 34px;
+      align-items: start;
+    }
+    .welcome-banner {
+      grid-column: 1 / -1;
+      position: relative;
+      overflow: hidden;
+      min-height: 138px;
+      padding: 25px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      border: 1px solid rgba(255,255,255,.84);
+      border-radius: 25px;
+      background: linear-gradient(112deg, rgba(255,255,255,.75), rgba(255,255,255,.43));
+      box-shadow: 0 13px 38px rgba(43, 64, 100, .09), inset 0 1px 0 rgba(255,255,255,.9);
+      backdrop-filter: blur(28px) saturate(170%);
+      -webkit-backdrop-filter: blur(28px) saturate(170%);
+    }
+    .welcome-banner::before {
+      content: ""; position: absolute; inset: 0 auto 0 0; width: 35%; pointer-events: none;
+      background: radial-gradient(ellipse at 25% 45%, rgba(136, 177, 232, .23), transparent 68%);
+    }
+    .welcome-copy { position: relative; z-index: 1; }
+    .welcome-kicker {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-bottom: 8px; color: #5473a7; font-size: 11px; font-weight: 700;
+    }
+    .welcome-kicker svg { width: 15px; height: 15px; }
+    .welcome-title { margin: 0; color: #1c3153; font-size: clamp(21px, 2.6vw, 29px); line-height: 1.35; letter-spacing: -.45px; }
+    .welcome-message { margin: 7px 0 0; color: #65758d; font-size: 13px; line-height: 1.8; }
+    .welcome-art {
+      flex: 0 0 auto; width: 82px; height: 82px; display: grid; place-items: center;
+      border-radius: 27px; border: 1px solid rgba(255,255,255,.85);
+      color: #4266a4; background: linear-gradient(145deg, rgba(255,255,255,.87), rgba(222,233,250,.66));
+      box-shadow: 0 8px 24px rgba(53, 82, 133, .11), inset 0 1px 0 #fff;
+    }
+    .welcome-art svg { width: 39px; height: 39px; }
+    .editor {
+      grid-column: 1;
+      position: sticky;
+      top: 18px;
+      padding: 23px;
+      border: 1px solid rgba(255,255,255,.88);
+      border-radius: 23px;
+      background: var(--glass);
+      box-shadow: 0 13px 36px rgba(40, 59, 91, .10), inset 0 1px 0 rgba(255,255,255,.95);
+      backdrop-filter: blur(28px) saturate(165%);
+      -webkit-backdrop-filter: blur(28px) saturate(165%);
+    }
+    .editor-heading { display: flex; align-items: center; gap: 11px; }
+    .section-icon {
+      flex: 0 0 auto; width: 38px; height: 38px; display: grid; place-items: center;
+      border-radius: 13px; color: #4165a5; background: linear-gradient(145deg, rgba(255,255,255,.9), rgba(227,236,250,.85));
+      border: 1px solid rgba(255,255,255,.88); box-shadow: 0 3px 10px rgba(48, 77, 126, .08);
+    }
+    .section-icon svg { width: 19px; height: 19px; }
+    .editor h1 { margin: 0; font-size: 17px; letter-spacing: -.2px; }
+    .editor-intro { margin: 12px 0 20px; color: var(--muted); font-size: 12px; line-height: 1.8; }
+    .field { margin-top: 17px; }
+    .field-label { display: flex; align-items: center; gap: 7px; margin: 0 0 8px; font-size: 12px; font-weight: 700; }
+    .field-label svg { flex: 0 0 auto; width: 16px; height: 16px; color: #7690ba; }
+    .field-hint { color: var(--muted); font-size: 10px; font-weight: 400; }
+    input[type="text"], select {
+      display: block; width: 100%; height: 44px;
+      border: 1px solid rgba(133, 153, 181, .25); border-radius: 12px;
+      padding: 0 13px; background: rgba(255,255,255,.64); color: var(--ink);
+      font: inherit; font-size: 12px; outline: none;
+      box-shadow: inset 0 1px 2px rgba(42, 63, 96, .025);
+      transition: border-color .18s, box-shadow .18s, background .18s, transform .18s;
+    }
+    input[type="text"]:hover, select:hover { background: rgba(255,255,255,.84); border-color: rgba(97, 127, 180, .42); }
+    input[type="text"]:focus, select:focus { border-color: #7895c7; background: rgba(255,255,255,.94); box-shadow: 0 0 0 4px rgba(66, 104, 169, .11), 0 3px 11px rgba(58, 85, 133, .06); }
+    input::placeholder { color: #9aa7b9; }
+    .student-list { display: grid; gap: 9px; }
+    .student-row { display: grid; grid-template-columns: minmax(0, 1fr) 42px; gap: 8px; }
+    .remove-student {
+      display: grid; place-items: center;
+      border: 1px solid rgba(133, 153, 181, .24); border-radius: 12px;
+      background: rgba(255,255,255,.62); color: #8190a5; cursor: pointer;
+      transition: .18s ease;
+    }
+    .remove-student svg { width: 17px; height: 17px; }
+    .remove-student:hover { border-color: rgba(210, 111, 111, .42); color: #a43c3c; background: rgba(255,246,246,.9); }
+    .add-student {
+      width: 100%; margin-top: 9px; padding: 10px 12px;
+      display: flex; justify-content: center; align-items: center; gap: 8px;
+      border: 1px dashed rgba(90, 120, 176, .43); border-radius: 12px;
+      color: var(--accent); background: rgba(245,248,255,.58); font: inherit; font-size: 12px; font-weight: 700;
+      cursor: pointer; transition: .18s ease;
+    }
+    .add-student svg { width: 16px; height: 16px; }
+    .add-student:hover { border-style: solid; background: rgba(232,239,252,.84); transform: translateY(-1px); }
+    .gender-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .gender-choice { position: relative; }
+    .gender-choice input { position: absolute; opacity: 0; pointer-events: none; }
+    .gender-choice span {
+      min-height: 41px; display: grid; place-items: center;
+      padding: 7px; border: 1px solid rgba(133, 153, 181, .25); border-radius: 12px;
+      color: #5b687b; background: rgba(255,255,255,.58); font-size: 12px; cursor: pointer; transition: .18s ease;
+    }
+    .gender-choice input:checked + span { border-color: rgba(72, 108, 172, .55); color: var(--accent-strong); background: rgba(224,235,252,.75); font-weight: 700; box-shadow: inset 0 1px 0 rgba(255,255,255,.8); }
+    .gender-choice input:focus-visible + span { outline: 3px solid rgba(58, 98, 165, .2); }
+    .print-button {
+      width: 100%; min-height: 47px; margin-top: 22px;
+      display: flex; align-items: center; justify-content: center; gap: 9px;
+      border: 1px solid rgba(255,255,255,.25); border-radius: 13px;
+      background: linear-gradient(135deg, #4771b6, #2c4f91); color: #fff;
+      box-shadow: 0 7px 16px rgba(49, 81, 143, .22), inset 0 1px 0 rgba(255,255,255,.22);
+      font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; transition: .18s ease;
+    }
+    .print-button svg { width: 18px; height: 18px; }
+    .print-button:hover { transform: translateY(-1px); background: linear-gradient(135deg, #3e67aa, #244580); box-shadow: 0 9px 20px rgba(49, 81, 143, .27); }
+    .print-note { margin: 10px 0 0; color: var(--muted); font-size: 10px; line-height: 1.7; text-align: center; }
+    .preview-area { grid-column: 2; display: flex; flex-direction: column; align-items: center; gap: 12px; min-width: 0; }
+    .preview-toolbar { width: min(100%, 794px); display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 2px; }
+    .preview-label { display: inline-flex; align-items: center; gap: 7px; color: #64758d; font-size: 11px; font-weight: 700; }
+    .preview-label svg { width: 16px; height: 16px; color: #718bb6; }
+    .preview-chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border: 1px solid rgba(255,255,255,.78); border-radius: 99px; color: #718097; background: rgba(255,255,255,.48); font-size: 10px; box-shadow: 0 3px 10px rgba(50, 68, 99, .04); }
+    .preview-chip svg { width: 13px; height: 13px; color: #748ab0; }
+    .paper {
+      position: relative;
+      width: min(100%, 794px);
+      aspect-ratio: 210 / 297;
+      overflow: hidden;
+      padding: 6.3% 8.3% 7.7%;
+      background: #fff;
+      box-shadow: var(--paper-shadow);
+      color: #111;
+    }
+    .cover-header {
+      display: grid;
+      grid-template-columns: 1fr 1.42fr 1fr;
+      align-items: center;
+      gap: 3.2%;
+      min-height: 17.3%;
+      direction: ltr;
+    }
+    .logo-box { display: grid; place-items: center; min-width: 0; }
+    .logo-box img { display: block; width: 100%; max-width: 143px; max-height: 145px; object-fit: contain; }
+    .institution {
+      direction: rtl;
+      color: #101010;
+      text-align: center;
+      font-weight: 700;
+      font-size: clamp(11px, 1.9vw, 18px);
+      line-height: 1.48;
+      white-space: nowrap;
+    }
+    .institution div:first-child { font-size: 1.04em; }
+    .cover-content {
+      position: absolute;
+      top: 37.5%; left: 10%; right: 10%;
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center;
+    }
+    .topic {
+      max-width: 100%; margin: 0; color: #111;
+      font-size: clamp(20px, 3.05vw, 30px); line-height: 1.65;
+      font-weight: 700; white-space: pre-wrap; overflow-wrap: anywhere;
+    }
+    .students-heading {
+      margin-top: 5.5%; color: #161616;
+      font-size: clamp(15px, 2.1vw, 20px); line-height: 1.55; font-weight: 700;
+    }
+    .students {
+      margin-top: 8px; display: grid; gap: 12px;
+      color: #161616; font-size: clamp(15px, 2.1vw, 20px); line-height: 1.55;
+      font-weight: 600;
+    }
+    .student-name { overflow-wrap: anywhere; }
+    .supervisor {
+      position: absolute; left: 8.5%; bottom: 7.8%;
+      max-width: 48%; direction: rtl; text-align: right;
+      display: grid; gap: 2px;
+      color: #111; font-size: clamp(12px, 1.8vw, 17px); line-height: 1.65;
+    }
+    .supervisor-label { font-weight: 700; }
+    .supervisor-name { font-weight: 500; }
+    .empty-placeholder { color: #aeb4bd !important; }
+    @media (min-width: 1400px) { .paper { width: 794px; } }
+    @media (max-width: 860px) {
+      .workspace { grid-template-columns: 1fr; gap: 20px; padding: 20px 14px 32px; }
+      .welcome-banner { grid-column: 1; min-height: 126px; padding: 22px; border-radius: 21px; }
+      .editor { grid-column: 1; position: static; width: min(100%, 620px); justify-self: center; }
+      .preview-area { grid-column: 1; width: 100%; }
+      .preview-toolbar { width: min(100%, 670px); }
+      .paper { width: min(100%, 670px); }
+      .institution { font-size: clamp(9px, 2.25vw, 15px); }
+      .logo-box img { max-height: 110px; }
+      .supervisor { max-width: 55%; }
+    }
+    @media (max-width: 480px) {
+      .appbar { padding: 11px 14px; }
+      .appbar-note { display: none; }
+      .workspace { padding-inline: 10px; }
+      .welcome-banner { min-height: 115px; padding: 17px; gap: 12px; }
+      .welcome-title { font-size: 20px; }
+      .welcome-message { max-width: 290px; font-size: 11px; }
+      .welcome-art { width: 58px; height: 58px; border-radius: 19px; }
+      .welcome-art svg { width: 29px; height: 29px; }
+      .editor { padding: 18px; border-radius: 20px; }
+      .paper { padding-inline: 6%; }
+      .cover-header { grid-template-columns: 1fr 1.5fr 1fr; gap: 2%; min-height: 16%; }
+      .logo-box img { max-height: 65px; }
+      .institution { font-size: clamp(7px, 2.45vw, 11px); }
+      .cover-content { top: 36%; left: 7%; right: 7%; }
+      .students { gap: 7px; margin-top: 8px; }
+      .supervisor { left: 6%; bottom: 7%; max-width: 60%; }
+      .preview-chip { font-size: 9px; }
+    }
+    @page { size: A4 portrait; margin: 0; }
+    @media print {
+      body { background: #fff; min-height: auto; }
+      .appbar, .welcome-banner, .editor, .preview-toolbar { display: none !important; }
+      .workspace { display: block; margin: 0; padding: 0; max-width: none; }
+      .preview-area { display: block; }
+      .paper { width: 210mm; height: 297mm; aspect-ratio: auto; margin: 0; padding: 18.7mm 17.4mm 22.9mm; box-shadow: none; }
+      .cover-header { min-height: 17.3%; }
+      .logo-box img { max-width: 38mm; max-height: 38mm; }
+      .institution { font-size: 13pt; }
+      .cover-content { top: 37.5%; }
+      .topic { font-size: 22pt; }
+      .students-heading, .students { font-size: 15pt; }
+      .supervisor { left: 17.9mm; bottom: 22.9mm; font-size: 13pt; }
+      .empty-placeholder { color: #111 !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="appbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 5l9 4.5-9 4.5L3 9.5Z"/><path d="M6.5 11.4v4.1c3.4 2.5 7.6 2.5 11 0v-4.1M21 10v5"/><path d="M21 15.2c-.8.7-.8 1.6 0 2.3"/></svg>
+      </div>
+      <div>
+        <div class="brand-title">منشئ صفحة الغلاف الجامعي</div>
+        <div class="brand-subtitle">معاينة مباشرة · جاهز للطباعة</div>
+      </div>
+    </div>
+    <div class="appbar-note">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v3m0 12v3M4.9 4.9 7 7m10 10 2.1 2.1M3 12h3m12 0h3M4.9 19.1 7 17m10-10 2.1-2.1"/><circle cx="12" cy="12" r="4"/></svg>
+      عدّل بياناتك وشاهد غلافك فورًا
+    </div>
+  </header>
+
+  <main class="workspace">
+    <section class="welcome-banner" aria-label="رسالة ترحيب">
+      <div class="welcome-copy">
+        <div class="welcome-kicker">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 1.4 5.6L19 10l-5.6 1.4L12 17l-1.4-5.6L5 10l5.6-1.4L12 3Z"/><path d="m19 16 .7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7L19 16Z"/></svg>
+          مساحة إعداد غلافك
+        </div>
+        <h1 class="welcome-title">أهلًا بك أيها الطالب</h1>
+        <p class="welcome-message">أنشئ غلاف بحثك بخطوات بسيطة، وشاهد النتيجة مباشرة قبل الطباعة.</p>
+      </div>
+      <div class="welcome-art" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m5 17 19-9 19 9-19 9L5 17Z"/><path d="M12.5 21v8c7.2 5.5 16.3 5.5 23 0v-8M43 18v10"/><path d="M43 28c-1.6 1.4-1.6 3.3 0 4.7"/><path d="M19 14.5h10"/></svg>
+      </div>
+    </section>
+
+    <section class="editor" aria-labelledby="editor-title">
+      <div class="editor-heading">
+        <span class="section-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21V5.5Z"/><path d="M4 5.5V21m5-13h7m-7 4h7"/></svg>
+        </span>
+        <h2 id="editor-title">بيانات الغلاف</h2>
+      </div>
+      <p class="editor-intro">أدخل المعلومات المطلوبة، ثم اطبع الصفحة أو احفظها بصيغة PDF.</p>
+
+      <div class="field">
+        <label class="field-label" for="topic-input">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="M7 8h10M7 12h10m-10 4h6"/></svg>
+          اسم الموضوع
+        </label>
+        <input id="topic-input" type="text" placeholder="مثال: الكيمياء العضوية" autocomplete="off">
+      </div>
+
+      <div class="field">
+        <span class="field-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M3 20a6 6 0 0 1 12 0m2-13a3 3 0 0 1 0 6m1 2a5 5 0 0 1 3 5"/></svg>
+          أسماء الطلبة <span class="field-hint">(يظهر عنوان الإعداد فوق الأسماء تلقائيًا)</span>
+        </span>
+        <div id="student-list" class="student-list"></div>
+        <button id="add-student" class="add-student" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          إضافة طالب آخر
+        </button>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="supervisor-input">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0m-8-9 2 3-2 2-2-2 2-3Z"/></svg>
+          اسم المشرف
+        </label>
+        <input id="supervisor-input" type="text" placeholder="اكتب الاسم الكامل للمشرف/ة" autocomplete="off">
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="supervisor-rank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 15 9l6 .9-4.4 4.3 1 6.1-5.6-3-5.6 3 1-6.1L3 9.9 9 9l3-6Z"/></svg>
+          اللقب العلمي للمشرف/ة
+        </label>
+        <select id="supervisor-rank">
+          <option value="" selected>اختر اللقب العلمي</option>
+          <option value="أ.د.">أ.د. — أستاذ دكتور</option>
+          <option value="أ.م.د.">أ.م.د. — أستاذ مساعد دكتور</option>
+          <option value="أ.م.">أ.م. — أستاذ مساعد</option>
+          <option value="م.د.">م.د. — مدرس دكتور</option>
+          <option value="م.">م. — مدرس</option>
+          <option value="م.م.">م.م. — مدرس مساعد</option>
+        </select>
+      </div>
+
+      <fieldset class="field" style="border:0;padding:0;margin-inline:0">
+        <legend class="field-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0M5 4l2 2m12-2-2 2"/></svg>
+          جنس المشرف/ة
+        </legend>
+        <div class="gender-options">
+          <label class="gender-choice"><input type="radio" name="supervisor-gender" value="male" checked><span>رجل</span></label>
+          <label class="gender-choice"><input type="radio" name="supervisor-gender" value="female"><span>امرأة</span></label>
+        </div>
+      </fieldset>
+
+      <button id="print-button" class="print-button" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8V3h10v5M7 17H5a2 2 0 0 1-2-2v-4a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v4a2 2 0 0 1-2 2h-2"/><path d="M7 14h10v7H7zM17 11h.01"/></svg>
+        طباعة الغلاف / حفظ PDF
+      </button>
+      <p class="print-note">في نافذة الطباعة، اختر «حفظ بصيغة PDF» لإنشاء نسخة رقمية.</p>
+    </section>
+
+    <section class="preview-area" aria-label="معاينة صفحة الغلاف">
+      <div class="preview-toolbar">
+        <div class="preview-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12s3.4-6.5 9.5-6.5 9.5 6.5 9.5 6.5-3.4 6.5-9.5 6.5S2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.8"/></svg>
+          معاينة صفحة الغلاف
+        </div>
+        <div class="preview-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M14 3v5h5M8 13h8m-8 4h8"/></svg>
+          ورقة A4
+        </div>
+      </div>
+      <article class="paper" id="paper">
+        <header class="cover-header">
+          <div class="logo-box"><img src="assets/emblem-left.jpg" alt="شعار جامعة تكريت"></div>
+          <div class="institution" aria-label="وزارة التعليم العالي والبحث العلمي، جامعة تكريت، كلية العلوم، قسم الكيمياء">
+            <div>وزارة التعليم العالي</div>
+            <div>والبحث العلمي</div>
+            <div>جامعة تكريت</div>
+            <div>كلية العلوم</div>
+            <div>قسم الكيمياء</div>
+          </div>
+          <div class="logo-box"><img src="assets/emblem-right.jpg" alt="شعار كلية العلوم"></div>
+        </header>
+        <section class="cover-content">
+          <h2 class="topic empty-placeholder" id="topic-preview">اسم الموضوع</h2>
+          <div class="students-heading" id="students-heading">إعداد الطالب</div>
+          <div class="students" id="students-preview" aria-live="polite"></div>
+        </section>
+        <footer class="supervisor">
+          <span class="supervisor-label" id="supervisor-label">بإشراف الدكتور</span>
+          <div><span id="supervisor-rank-preview"></span> <span class="supervisor-name empty-placeholder" id="supervisor-preview">اسم المشرف</span></div>
+        </footer>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      const list = document.getElementById('student-list');
+      const preview = document.getElementById('students-preview');
+      function addStudent(value = '') {
+        const row = document.createElement('div');
+        row.className = 'student-row';
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.autocomplete = 'off';
+        input.placeholder = `اسم الطالب ${list.children.length + 1}`;
+        input.setAttribute('aria-label', `اسم الطالب ${list.children.length + 1}`);
+        input.value = value;
+        input.addEventListener('input', renderStudents);
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'remove-student';
+        remove.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16m-10 4v6m4-6v6M6 7l1 14h10l1-14M9 7V4h6v3"/></svg>';
+        remove.setAttribute('aria-label', `حذف الطالب ${list.children.length + 1}`);
+        remove.title = 'حذف هذا الاسم';
+        remove.addEventListener('click', () => {
+          if (list.children.length > 1) {
+            row.remove();
+            renderStudents();
+          } else {
+            input.value = '';
+            renderStudents();
+          }
+        });
+        row.append(input, remove);
+        list.append(row);
+        input.focus();
+        renderStudents();
+      }
+
+      function renderStudents() {
+        preview.replaceChildren();
+        const inputs = [...list.querySelectorAll('input')];
+        const heading = document.getElementById('students-heading');
+        heading.textContent = inputs.length === 1 ? 'إعداد الطالب' : 'إعداد الطلاب';
+        inputs.forEach((input, index) => {
+          const number = (index + 1).toLocaleString('ar-IQ');
+          input.placeholder = `اسم الطالب ${number}`;
+          input.setAttribute('aria-label', `اسم الطالب ${number}`);
+          const line = document.createElement('div');
+          line.className = 'student-name';
+          const prefix = inputs.length > 1 ? `${number}. ` : '';
+          if (input.value.trim()) {
+            line.textContent = `${prefix}${input.value.trim()}`;
+          } else {
+            line.textContent = `${prefix}اسم الطالب${inputs.length > 1 ? ` ${number}` : ''}`;
+            line.classList.add('empty-placeholder');
+          }
+          preview.append(line);
+        });
+      }
+
+      const topicInput = document.getElementById('topic-input');
+      const topicPreview = document.getElementById('topic-preview');
+      topicInput.addEventListener('input', () => {
+        const value = topicInput.value.trim();
+        topicPreview.textContent = value || 'اسم الموضوع';
+        topicPreview.classList.toggle('empty-placeholder', !value);
+      });
+
+      const supervisorInput = document.getElementById('supervisor-input');
+      const supervisorPreview = document.getElementById('supervisor-preview');
+      const supervisorLabel = document.getElementById('supervisor-label');
+      const supervisorRank = document.getElementById('supervisor-rank');
+      const supervisorRankPreview = document.getElementById('supervisor-rank-preview');
+      function renderSupervisor() {
+        const gender = document.querySelector('input[name="supervisor-gender"]:checked').value;
+        supervisorLabel.textContent = gender === 'female' ? 'بإشراف الدكتورة' : 'بإشراف الدكتور';
+        supervisorRankPreview.textContent = supervisorRank.value;
+        const name = supervisorInput.value.trim();
+        supervisorPreview.textContent = name ? ` ${name}` : ' اسم المشرف';
+        supervisorPreview.classList.toggle('empty-placeholder', !name);
+      }
+      supervisorInput.addEventListener('input', renderSupervisor);
+      supervisorRank.addEventListener('change', renderSupervisor);
+      document.querySelectorAll('input[name="supervisor-gender"]').forEach(radio => radio.addEventListener('change', renderSupervisor));
+      document.getElementById('add-student').addEventListener('click', () => addStudent());
+      document.getElementById('print-button').addEventListener('click', () => window.print());
+
+      addStudent();
+      list.querySelector('input').blur();
+      renderSupervisor();
+    })();
+  </script>
+</body>
+</html>
